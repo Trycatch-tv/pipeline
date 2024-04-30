@@ -2,7 +2,7 @@ name: Agregar miembros a la organización
 
 on:
   schedule:
-    - cron: '5 * * * *'
+    - cron: '* * * * *'
 
 jobs:
   agregar-miembros:
