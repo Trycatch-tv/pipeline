@@ -25,11 +25,15 @@ jobs:
 
           for (const issue of issues.data) {
             const username = issue.title
+            // Obtener la dirección de correo electrónico del usuario
+            const userEmail = await github.rest.users.getByUsername({
+              username: username
+            })
             try {
               await github.rest.orgs.createInvitation({
                 org: orgName,
-                username: username,
-                role: 'direct_member'
+                email: userEmail.data.email, // Usar la dirección de correo electrónico del usuario
+                role: 'direct_member' // Usar 'direct_member' para agregar miembros directos
               })
               console.log(`Usuario ${username} agregado como miembro de la organización`)
             } catch (error) {
