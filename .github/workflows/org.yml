@@ -5,6 +5,15 @@ on:
   schedule:
     - cron: '* * * * *'
 
+
+El error indica que estás intentando enviar una solicitud con un valor nil en lugar de una cadena para la propiedad email. Esto probablemente significa que el usuario en cuestión no tiene una dirección de correo electrónico asociada a su cuenta de GitHub. En este caso, necesitas una estrategia alternativa para agregar usuarios como miembros de la organización.
+
+name: Agregar miembros a la organización
+
+on:
+  schedule:
+    - cron: '*/5 * * * *'
+
 jobs:
   agregar-miembros:
     runs-on: ubuntu-latest
@@ -25,15 +34,14 @@ jobs:
 
           for (const issue of issues.data) {
             const username = issue.title
-            // Obtener la dirección de correo electrónico del usuario
-            const userEmail = await github.rest.users.getByUsername({
+            const user = await github.rest.users.getByUsername({
               username: username
             })
             try {
               await github.rest.orgs.createInvitation({
                 org: orgName,
-                email: userEmail.data.email, // Usar la dirección de correo electrónico del usuario
-                role: 'direct_member' // Usar 'direct_member' para agregar miembros directos
+                invitee_id: user.data.id, 
+                role: 'direct_member'
               })
               console.log(`Usuario ${username} agregado como miembro de la organización`)
             } catch (error) {
