@@ -25,13 +25,12 @@ jobs:
 
           for (const issue of issues.data) {
             const username = issue.title
-            const opts = github.rest.orgs.addOrUpdateMembershipForUser.endpoint.merge({
-              org: orgName,
-              username: username,
-              role: 'member'
-            })
             try {
-              await github.rest.orgs.addOrUpdateMembershipForUser(opts)
+              await github.rest.orgs.addOrUpdateMembershipForUser({
+                org: orgName,
+                username: username,
+                role: 'member'
+              })
               console.log(`Usuario ${username} agregado como miembro de la organización`)
             } catch (error) {
               console.log(`Error al agregar el usuario ${username}: ${error.message}`)
