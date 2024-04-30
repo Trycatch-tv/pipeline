@@ -1,0 +1,40 @@
+name: Agregar miembros a la organización
+
+on:
+  schedule:
+    - cron: '*/10 * * * *' # Ejecutar cada 10 minutos
+
+jobs:
+  agregar-miembros:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Agregar miembros a la organización
+      uses: actions/github-script@v6
+      with:
+        github-token: ${{ secrets.GIT_TOKEN }}
+        script: |
+          const orgName = 'Trycatch-tv'
+          const repoName = 'pipeline'
+
+          // Obtener todas las issues abiertas del repositorio
+          const issues = await github.rest.issues.listForRepo({
+            owner: orgName,
+            repo: repoName,
+            state: 'open'
+          })
+
+          // Iterar sobre cada issue y agregar el nombre del título como miembro de la organización
+          for (const issue of issues.data) {
+            const username = issue.title
+            const opts = github.rest.orgs.addOrUpdateMembershipForUser.endpoint.merge({
+              org: orgName,
+              username: username,
+              role: 'member'
+            })
+            try {
+              await github.rest.orgs.addOrUpdateMembershipForUser(opts)
+              console.log(`Usuario ${username} agregado como miembro de la organización`)
+            } catch (error) {
+              console.log(`Error al agregar el usuario ${username}: ${error.message}`)
+            }
+          }
