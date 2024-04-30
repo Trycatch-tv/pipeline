@@ -5,15 +5,6 @@ on:
   schedule:
     - cron: '* * * * *'
 
-
-El error indica que estás intentando enviar una solicitud con un valor nil en lugar de una cadena para la propiedad email. Esto probablemente significa que el usuario en cuestión no tiene una dirección de correo electrónico asociada a su cuenta de GitHub. En este caso, necesitas una estrategia alternativa para agregar usuarios como miembros de la organización.
-
-name: Agregar miembros a la organización
-
-on:
-  schedule:
-    - cron: '*/5 * * * *'
-
 jobs:
   agregar-miembros:
     runs-on: ubuntu-latest
