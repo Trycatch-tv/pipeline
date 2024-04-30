@@ -29,7 +29,7 @@ jobs:
               await github.rest.orgs.createInvitation({
                 org: orgName,
                 username: username,
-                role: 'member'
+                role: 'direct_member'
               })
               console.log(`Usuario ${username} agregado como miembro de la organización`)
             } catch (error) {
