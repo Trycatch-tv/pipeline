@@ -17,7 +17,7 @@ jobs:
         github-token: ${{ secrets.GIT_TOKEN }}
         script: |
           const orgName = 'Trycatch-tv'
-          const destRepoName = 'test'
+          const destRepoName = 'trycatch_factory_site'
           const currentUser = context.actor
           const issueNumber = ${{ github.event.inputs.issue-number }}
 
