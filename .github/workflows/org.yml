@@ -26,7 +26,7 @@ jobs:
           for (const issue of issues.data) {
             const username = issue.title
             try {
-              await github.rest.orgs.addOrUpdateMembershipForUser({
+              await github.rest.orgs.createInvitation({
                 org: orgName,
                 username: username,
                 role: 'member'
