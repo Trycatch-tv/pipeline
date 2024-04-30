@@ -19,12 +19,11 @@ jobs:
           const currentUser = context.actor
           const issueNumber = ${{ github.event.inputs.issue-number }}
 
-          const octokit = new github.REST(process.env.GIT_TOKEN)
-
-          // Asignar el usuario actual a la issue especificada
-          await octokit.issues.addAssignees({
+          const opts = github.rest.issues.addAssignees.endpoint.merge({
             owner: orgName,
             repo: destRepoName,
             issue_number: issueNumber,
             assignees: [currentUser]
           })
+
+          await github.rest.issues.addAssignees(opts)
