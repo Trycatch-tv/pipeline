@@ -1,0 +1,30 @@
+on:
+    workflow_dispatch:
+      inputs:
+        issue-number:
+          description: 'Número de la issue a asignar'
+          required: true
+  
+jobs:
+    assign-issue:
+      runs-on: ubuntu-latest
+      steps:
+      - name: Asignar issue existente al usuario actual
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GIT_TOKEN }}
+          script: |
+            const orgName = 'Trycatch-tv'
+            const destRepoName = 'test'
+            const currentUser = context.actor
+            const issueNumber = ${{ github.event.inputs.issue-number }}
+  
+            const octokit = github.getOctokit(process.env.GIT_TOKEN)
+  
+            // Asignar el usuario actual a la issue especificada
+            await octokit.rest.issues.addAssignees({
+              owner: orgName,
+              repo: destRepoName,
+              issue_number: issueNumber,
+              assignees: [currentUser]
+            })
