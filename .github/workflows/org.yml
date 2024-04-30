@@ -1,6 +1,7 @@
 name: Agregar miembros a la organización
 
 on:
+  workflow_dispatch:
   schedule:
     - cron: '* * * * *'
 
