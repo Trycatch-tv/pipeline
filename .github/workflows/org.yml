@@ -2,7 +2,7 @@ name: Agregar miembros a la organización
 
 on:
   schedule:
-    - cron: '*/10 * * * *' # Ejecutar cada 10 minutos
+    - cron: '*/5 * * * *'
 
 jobs:
   agregar-miembros:
@@ -16,14 +16,12 @@ jobs:
           const orgName = 'Trycatch-tv'
           const repoName = 'pipeline'
 
-          // Obtener todas las issues abiertas del repositorio
           const issues = await github.rest.issues.listForRepo({
             owner: orgName,
             repo: repoName,
             state: 'open'
           })
 
-          // Iterar sobre cada issue y agregar el nombre del título como miembro de la organización
           for (const issue of issues.data) {
             const username = issue.title
             const opts = github.rest.orgs.addOrUpdateMembershipForUser.endpoint.merge({
