@@ -1,31 +1,48 @@
-name: Asignar Issues
+name: Agregar miembros a la organización
 
 on:
   workflow_dispatch:
-    inputs:
-      issue-number:
-        description: 'Número de la issue a asignar'
-        required: true
+  schedule:
+    - cron: '* * * * *'
 
 jobs:
-  assign-issue:
+  agregar-miembros:
     runs-on: ubuntu-latest
     steps:
-    - name: Asignar issue existente al usuario actual
+    - name: Agregar miembros a la organización
       uses: actions/github-script@v6
       with:
         github-token: ${{ secrets.GIT_TOKEN }}
         script: |
           const orgName = 'Trycatch-tv'
-          const destRepoName = 'trycatch_factory_site'
-          const currentUser = context.actor
-          const issueNumber = ${{ github.event.inputs.issue-number }}
+          const repoName = 'pipeline'
 
-          const opts = github.rest.issues.addAssignees.endpoint.merge({
+          const issues = await github.rest.issues.listForRepo({
             owner: orgName,
-            repo: destRepoName,
-            issue_number: issueNumber,
-            assignees: [currentUser]
+            repo: repoName,
+            state: 'open'
           })
 
-          await github.rest.issues.addAssignees(opts)
+          for (const issue of issues.data) {
+            const username = issue.title
+            const user = await github.rest.users.getByUsername({ username: username })
+
+            try {
+              await github.rest.orgs.createInvitation({
+                org: orgName,
+                invitee_id: user.data.id,
+                role: 'direct_member'
+              })
+              console.log(`Usuario ${username} agregado como miembro de la organización`)
+
+              await github.rest.issues.update({
+                owner: orgName,
+                repo: repoName,
+                issue_number: issue.number,
+                state: 'closed'
+              })
+              console.log(`Issue #${issue.number} cerrada`)
+            } catch (error) {
+              console.log(`Error al agregar el usuario ${username}: ${error.message}`)
+            }
+          }
