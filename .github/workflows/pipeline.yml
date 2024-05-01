@@ -3,7 +3,7 @@ name: Agregar miembros a la organización
 on:
   workflow_dispatch:
   schedule:
-    - cron: '* * * * *'
+    - cron: '* * * * *' # Ejecutar cada minuto (ajusta según tus necesidades)
 
 jobs:
   agregar-miembros:
@@ -35,13 +35,11 @@ jobs:
               })
               console.log(`Usuario ${username} agregado como miembro de la organización`)
 
-              await github.rest.issues.update({
-                owner: orgName,
-                repo: repoName,
-                issue_number: issue.number,
-                state: 'closed'
-              })
-              console.log(`Issue #${issue.number} cerrada`)
+              - name: Close Issue
+                uses: peter-evans/close-issue@v3
+                with:
+                  issue-number: ${{ issue.number }}
+                  comment: Auto-closing issue after adding user as member
             } catch (error) {
               console.log(`Error al agregar el usuario ${username}: ${error.message}`)
             }
