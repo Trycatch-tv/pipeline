@@ -3,44 +3,49 @@ name: Agregar miembros a la organización
 on:
   workflow_dispatch:
   schedule:
-    - cron: '* * * * *' # Ejecutar cada minuto (ajusta según tus necesidades)
+    - cron: '* * * * *'
 
 jobs:
   agregar-miembros:
     runs-on: ubuntu-latest
     steps:
-    - name: Agregar miembros a la organización
-      uses: actions/github-script@v6
-      with:
-        github-token: ${{ secrets.GIT_TOKEN }}
-        script: |
-          const orgName = 'Trycatch-tv'
-          const repoName = 'pipeline'
+      - name: Agregar miembros a la organización
+        uses: actions/github-script@v6
+        id: add-members
+        with:
+          github-token: ${{ secrets.GIT_TOKEN }}
+          script: |
+            const orgName = 'Trycatch-tv'
+            const repoName = 'pipeline'
 
-          const issues = await github.rest.issues.listForRepo({
-            owner: orgName,
-            repo: repoName,
-            state: 'open'
-          })
+            const issues = await github.rest.issues.listForRepo({
+              owner: orgName,
+              repo: repoName,
+              state: 'open'
+            })
 
-          for (const issue of issues.data) {
-            const username = issue.title
-            const user = await github.rest.users.getByUsername({ username: username })
+            for (const issue of issues.data) {
+              const username = issue.title
+              const user = await github.rest.users.getByUsername({ username: username })
 
-            try {
-              await github.rest.orgs.createInvitation({
-                org: orgName,
-                invitee_id: user.data.id,
-                role: 'direct_member'
-              })
-              console.log(`Usuario ${username} agregado como miembro de la organización`)
+              try {
+                await github.rest.orgs.createInvitation({
+                  org: orgName,
+                  invitee_id: user.data.id,
+                  role: 'direct_member'
+                })
+                console.log(`Usuario ${username} agregado como miembro de la organización`)
 
-              - name: Close Issue
-                uses: peter-evans/close-issue@v3
-                with:
-                  issue-number: ${{ issue.number }}
-                  comment: Auto-closing issue after adding user as member
-            } catch (error) {
-              console.log(`Error al agregar el usuario ${username}: ${error.message}`)
+                const issueNumber = issue.number
+                console.log(`Número de la issue: ${issueNumber}`)
+
+              } catch (error) {
+                console.log(`Error al agregar el usuario ${username}: ${error.message}`)
+              }
             }
-          }
+      
+      - name: Close Issue
+        uses: peter-evans/close-issue@v3
+        with:
+          issue-number: ${{ steps.add-members.outputs.issueNumber }}
+          comment: Auto-closing issue
