@@ -52,7 +52,7 @@ jobs:
                 console.log(`Error al agregar el usuario ${username}: ${error.message}`)
               }
             }
-            console.log(`Última issue: ${issues.data[issues.data.length - 1].number}`)
+            console.log(`Última issue: ${issues.data.length > 0 ? issues.data[issues.data.length - 1].number : 'No issues found'}`)
 
       - name: Close Issue
         if: steps.add-members.outputs.issueNumber != null
