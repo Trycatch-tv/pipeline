@@ -9,9 +9,9 @@ jobs:
   agregar-miembros:
     runs-on: ubuntu-latest
     steps:
-      - name: Agregar miembros a la organización
-        uses: actions/github-script@v6
+      - name: Obtener e invitar a nuevos miembros
         id: add-members
+        uses: actions/github-script@v6
         with:
           github-token: ${{ secrets.GIT_TOKEN }}
           script: |
@@ -29,6 +29,15 @@ jobs:
               const user = await github.rest.users.getByUsername({ username: username })
 
               try {
+                const memberships = await github.rest.orgs.checkMembership({
+                  org: orgName,
+                  username: username
+                })
+                if (memberships.status === 204) {
+                  console.log(`El usuario ${username} ya es miembro de la organización`)
+                  continue; // Pasar al siguiente usuario
+                }
+
                 await github.rest.orgs.createInvitation({
                   org: orgName,
                   invitee_id: user.data.id,
@@ -43,8 +52,11 @@ jobs:
                 console.log(`Error al agregar el usuario ${username}: ${error.message}`)
               }
             }
-      
+            console.log(`Última issue: ${issues.data[issues.data.length - 1].number}`)
+            console.log(`::set-output name=issueNumber::${issues.data[issues.data.length - 1].number}`)
+
       - name: Close Issue
+        if: steps.add-members.outputs.issueNumber != null
         uses: peter-evans/close-issue@v3
         with:
           issue-number: ${{ steps.add-members.outputs.issueNumber }}
