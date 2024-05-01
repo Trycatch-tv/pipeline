@@ -1,15 +1,17 @@
-# Asignación de Issues
+# ¡Únete a Try Catch TV!
 
-## Descripción
+¡Gracias por tu interés en unirte a Try Catch! A continuación, te explicamos cómo puedes solicitar ser miembro y qué esperar una vez que te hayas unido.
 
-El flujo de trabajo "Asignar Issues" está diseñado para facilitar la gestión y asignación de issues. Cuando se ejecuta manualmente, el flujo de trabajo solicita el número de issue que se desea asignar del try catch sitio.
+## Cómo unirse
 
-## Uso
+1. **Crea una issue:** Abre una nueva issue en este repositorio especificando tu nombre de usuario de GitHub en el título de la issue.
+2. **Espera la invitación:** Nuestro sistema automático revisará tu solicitud y te enviará una invitación para unirte a la organización.
 
-1. Ve a la pestaña "Actions" en este repositorio.
-2. Selecciona el flujo de trabajo "Asignar Issues" en el panel lateral izquierdo.
-3. Haz clic en el botón "Run workflow" (Ejecutar flujo de trabajo).
-4. En el campo "issue-number", ingresa el número de la issue que deseas asignar desde el repositorio de origen.
-5. Haz clic en el botón verde "Run workflow" (Ejecutar flujo de trabajo) nuevamente.
+## ¿Qué sigue?
 
-El flujo de trabajo asignará el usuario que lo ejecutó como responsable de la issue especificada en el repositorio de destino.
+Una vez que hayas recibido la invitación y te hayas unido a la organización, tendrás acceso a los recursos y repositorios disponibles para los miembros. Si tienes alguna pregunta o necesitas ayuda, no dudes en contactar a nuestro equipo de soporte.
+
+## Requisitos
+
+- Para unirte a la organización, necesitas tener una cuenta de GitHub.
+- Asegúrate de que tu perfil de GitHub sea público para que podamos enviarte la invitación.
