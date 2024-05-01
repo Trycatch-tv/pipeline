@@ -29,13 +29,13 @@ jobs:
               const user = await github.rest.users.getByUsername({ username: username })
 
               try {
-                const memberships = await github.rest.orgs.checkMembership({
-                  org: orgName,
-                  username: username
+                const members = await github.rest.orgs.listMembers({
+                  org: orgName
                 })
-                if (memberships.status === 204) {
+                const isMember = members.data.some(member => member.login === username)
+                if (isMember) {
                   console.log(`El usuario ${username} ya es miembro de la organización`)
-                  continue; // Pasar al siguiente usuario
+                  continue;
                 }
 
                 await github.rest.orgs.createInvitation({
@@ -53,7 +53,6 @@ jobs:
               }
             }
             console.log(`Última issue: ${issues.data[issues.data.length - 1].number}`)
-            console.log(`::set-output name=issueNumber::${issues.data[issues.data.length - 1].number}`)
 
       - name: Close Issue
         if: steps.add-members.outputs.issueNumber != null
